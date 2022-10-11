@@ -1,0 +1,244 @@
+show variables like'%time_zone';
+set global time_zone = '+8:00';
+
+
+1.查看版本：select version();
+
+2.显示当前时间：select now();
+
+3.查看所有数据库：show databases;
+
+4.切换使用的数据库：use 数据库名;
+
+5.查看当前使用的数据库：select database();
+
+6.创建数据库：create database XXX;
+
+7.查看数据库下的表：show tables from 数据库名;
+
+8.查看表的信息：desc 表名;
+
+  临时更改属性编码方式 set 属性名 编码方式;
+     属性名为name：      set names gbk;
+
+9.创建表：
+create table + 表名
+create table student ( 
+		id INT(11), 
+		name VARCHAR(20), 
+		age INT(11), 
+		PRIMARY KEY(id)
+		);
+
+修改表：
+10.添加新字段：
+alter table 表名 add 新字段名 新字段类型
+alter table dd_mst add dd_test varchar(10);
+
+11.修改字段（重命名）
+alter table 表名 change 原名 新名 类型及约束;
+alter table dd_mst change dd_test d_t char(10) not null;
+
+12.修改字段（非重命名）（数据类型，大小）
+alter table 表名 modify 字段名 修改数据类型（大小）;
+alter table dd_mst modify dd_test varchar(10);
+
+13.删除字段
+alter table 表名 drop 列名;
+alter table dd_mst drop dd_test;
+
+14.删除表
+drop table 表名；
+drop table dd_mst;
+
+15.查看表的创建语句
+show create table 表名;
+show create table student;
+
+16.非空约束
+创建表时增加非空约束
+create table com_parm( 
+		...
+		Com_name VARCHAR(20) NOT NULL, 
+		...
+		);
+创建表后增加 非空约束
+alter table student1 change age age int( 3 ) not null;
+
+17.唯一约束
+创建表时增加 Unique 约束
+create table com_tel( 
+		...
+		password varchar(20) NOT NULL Unique, 
+		...
+		);
+创建表后增加 非空约束
+alter table student1 change age age int( 3 ) Unique;
+
+18.主键约束
+在创建表的时候设置主键
+create table table_name( 
+		...
+		column char(10) PRIMARY KEY, 
+		...
+		);
+修改表结构增加主键
+alter table 表名 add constraint [主键名称] primary key (主键 字段)
+
+19.外键约束（主从表）
+添加外键约束
+create table stu( 
+		Stu_sid INT PRIMARY KEY, 
+		NAME VARCHAR(50) NOT NULL 
+		);
+-- 添加外键约束方式一 
+create table score1( 
+		score DOUBLE, 
+		sid INT, 
+		constraint fk_sid foreign key(sid) references stu(sid) 
+		stu(stu_sid) 
+		);
+修改表结构增加外键
+alter table 表名 add constraint fk_sid foreign key(sid) references stu(sid)
+
+20.自动增长列
+语法格式 
+CREATE TABLE 表名（ 
+		字段名 数据类型 AUTO_INCREMENT, 
+		... 
+		);
+为已经创建完成的表字段设置为自动增长列
+语法格式：
+ALTER TABLE 表名 MODIFY 字段名 数据类型 PRIMARY KEY AUTO_INCREMENT;
+
+表中数据的增删改查
+增加数据
+21.全列插入：值的顺序与表中字段的顺序一致
+insert into 表名 values(...)
+insert into class values(1,'math',85.2); 
+
+22.部分列插入：值的顺序与给定的列顺序对应 
+insert into 表名 (列1,...)values(值1，...) 
+insert into class(class_id ,class_name ,class_num)  values(2,'PE',60.22);
+
+23.修改
+语法：update 表名 set 字段名=值 ，字段名=值 where 条件；
+update students set gender=0,hometown='太原' where id=9;
+
+24.删除
+delete from 表名 where 条件；
+delete from dd_mst where dd_id =2020;
+
+25.查询
+查询的基本语法： select *(字段名) from 表名;
+
+26.使用数学运算符(+、-、*、/)
+select sno + 2 from score;
+
+27.查询使用关键字 “is null” 和 “is not null” 判断 NULL
+select * from student where class is null;
+
+28.空值在数学运算中的使用：包含空值的数学表达式值都为空值
+select sno,class+1 from student;
+
+29.列的别名
+	列 AS 别名 ac_id AS a
+	列 别名
+	别名=列
+select sno = 'te_id' from student;
+
+30.连接符
+把列与列，列与字符连接在一起
+用concat(字段1，字段2)
+orcale数据库可使用 ||
+select concat(sname,ssex) from student;
+
+31.数据排重
+select distinct 字段名 from student;
+
+32.数据过滤
+使用WHERE 子句，对行数据进行限制，将不满足where条件的行过滤掉。
+select * from student where sno>105;
+WHERE子句中，字符和日期要包含在单引号中。
+select * from student where birthday='1977-09-01 00;00;00'; 
+select * from student where SNAME='tom';
+
+比较运算
+33.BETWEEN a AND b表达一个闭区间 [a，b]
+select * from student where sno between 101 and 105;
+
+34.IN运算显示列表中规定的值
+select * from student where sno in(1,103,108); --顺序不同， 效率不同，尽量把出现概率高的放前面
+
+35.LIKE 运算选择类似的值
+选择条件可以包含字符或数字
+%代表一个或多个字符
+_代表一个字符
+select * from student where sname like '%T%';
+%’和‘-’可以同时使用
+select * from student where sname like '_o%'; ?O%
+
+36.逻辑运算
+AND 逻辑并
+OR 逻辑或
+NOT 逻辑否
+and: select * from student where sno>=108 and ssex="man"; 
+or： select * from student where sno>=108 or ssex="man";
+
+37.常用数学函数：
+count(*) 
+select count(*) from student where class = '95031';
+avg() 平均值 
+sum() 求和
+
+数据排序
+38.单个列排序
+ORDER BY 排序标准（字段） 排序方式；
+ORDER BY 子句在SELECT语句的结尾
+排列的方式：ASC 升序，DESC 降序
+select * from 表名 order by 字段；
+select * from mdm ORDER BY ac_id desc;
+
+39.多个列排序
+ORDER BY 排序标准 1 排序方式，排序标准 2 排序方式
+先按第一个条件排，第一个相同再按第二个排。
+每个字段名后面都要加排序要求，默认asc。
+select * from mdm ORDER BY ac_id ASC,ac_no desc;
+
+40.按别名排序
+select ac_id,ac_id *2 test from mdm_ac_rel order by test;
+
+子查询
+子查询是一个 SELECT 查询，其作用是把返回值嵌套在 SELECT、INSERT、UPDATE、DELETE 语句或其它子查询中。
+任何允许使用表达式的地方都可以使用子查询。
+语法：SELECT 字段 FROM 表名 WHERE 字段 +运算符 
+（select 字段from 表名 where 条件）
+
+41.单行子查询：使用的是单行比较操作符
+select * from student where sno = (select ac_id from mdm_ac_rel where ac_id=1);
+
+42.多行子查询：返回多行
+	IN 等于列表中的任何一个
+	ANY 和子查询返回的任意一个值比较
+	ALL 和子查询返回的所有值比较
+select * from mdm_ac_rel where ac_id in (select sno from student); 
+select * from mdm_ac_rel where ac_id >any (select sno from student); 
+select * from mdm_ac_rel where ac_id >all (select sno from student where sno=1);
+43.求和：select   sun(字段名)   from   表名；
+44.多表查询：多个表中查询数据
+语法格式:
+（推荐使用）SELECT  显示的字段  from  表 名1  inner join   表名2  on   连接条件
+简写形式: SELECT  显示的字段  from  表名1，表名2  where  连接条件
+理解：两个表的交集，连接条件是交集的要求
+inner（等值）/left（左连接）/right（右连接）
+45.按字段分组：
+SELECT  显示的字段  from  表名1  group  by   分组字段
+单独使用意义不大，配合集合函数使用
+select   要求字段, group_concat( 显示字段) from 表名  group by 分组字段;
+46.分页：
+select   *   from  表名  limit   （页数-1）*每一页的数据条数，每一页的数据条数;
+
+47.
+48.
+49.
+50.
